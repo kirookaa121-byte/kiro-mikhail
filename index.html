@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiro Mikhail | Portfolio</title>
+
+    <!-- Content Security Policy لحماية إضافية -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
+
+    <!-- خطوط حديثة احترافية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Poppins:wght@400;600;700&family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+    
+    <!-- أيقونات FontAwesome للوسائط الاجتماعية -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==================== RESET & VARIABLES ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        :root {
+            --bg-base: #050515;
+            --blue-glow: #00d2ff;
+            --cyan-glow: #00f2fe;
+            --purple-glow: #7928ca;
+            --dark-blue: #0a1128;
+            --black-overlay: rgba(0, 0, 0, 0.85);
+            --glass-bg: rgba(15, 15, 35, 0.55);
+            --glass-border: rgba(0, 242, 254, 0.25);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: #ffffff;
+            font-family: 'Poppins', 'Cairo', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* ==================== BACKGROUND ANIMATIONS (GRID & STARS) ==================== */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(121, 40, 202, 0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 210, 255, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ==================== LOADING SCREEN ==================== */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #02020a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+        }
+
+        .loader-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+            letter-spacing: 2px;
+            margin-bottom: 25px;
+        }
+
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(0, 210, 255, 0.1);
+            border-top: 4px solid var(--cyan-glow);
+            border-right: 4px solid var(--purple-glow);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ==================== HEADER BAR ==================== */
+        .top-bar {
+            width: 100%;
+            height: 60px;
+            background: var(--black-overlay);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        }
+
+        .top-bar-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #0052D4, var(--cyan-glow), #4364F7, #0052D4);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+            filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.8));
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* ==================== COVER & PROFILE SECTION ==================== */
+        .cover-wrapper {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            overflow: hidden;
+        }
+
+        .cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cover-overlay-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, transparent 0%, rgba(5, 5, 21, 0.7) 60%, var(--bg-base) 100%);
+            pointer-events: none;
+        }
+
+        /* Profile Avatar */
+        .avatar-container {
+            position: absolute;
+            bottom: -30px;
+            right: 15%;
+            z-index: 15;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(135deg, var(--cyan-glow), var(--purple-glow));
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+        }
+
+        .avatar-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -6px; left: -6px; right: -6px; bottom: -6px;
+            border-radius: 50%;
+            border: 2px dashed var(--cyan-glow);
+            animation: rotateBg 12s linear infinite;
+            filter: drop-shadow(0 0 8px var(--cyan-glow));
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid #000;
+        }
+
+        /* Name Below Cover */
+        .profile-name-container {
+            margin-top: 40px;
+            padding: 0 10%;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .main-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 10px #0052D4, 0 0 20px var(--cyan-glow);
+            letter-spacing: 1.5px;
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            background: linear-gradient(to right, #ffffff 30%, var(--cyan-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Grid Cards (3x2) */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .avatar-container {
+                right: 50%;
+                transform: translate(50%, 0) translateX(100px) !important;
+            }
+            .avatar-container.active {
+                transform: translate(50%, 0) translateX(0) !important;
+            }
+            .profile-name-container {
+                justify-content: center;
+                margin-top: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--cyan-glow);
+            border-radius: 12px;
+            padding: 18px 22px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 15px rgba(0, 210, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .info-card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .info-card:hover {
+            transform: scale(1.05);
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.4), inset 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .card-label {
+            font-size: 0.85rem;
+            color: var(--cyan-glow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .card-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        /* ==================== ACCOUNTS SECTION ==================== */
+        .section-title {
+            text-align: center;
+            font-family: 'Orbitron', 'Cairo', sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 15px var(--purple-glow);
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--cyan-glow), var(--purple-glow));
+            margin: 8px auto 0;
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--cyan-glow);
+        }
+
+        .links-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 650px;
+            margin: 0 auto 50px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            background: rgba(10, 10, 25, 0.85);
+            border: 1.5px solid #0052D4;
+            border-radius: 12px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: translateX(-40px);
+        }
+
+        .social-btn.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: var(--cyan-glow);
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.5), inset 0 0 10px rgba(0, 242, 254, 0.2);
+            background: rgba(15, 20, 45, 0.9);
+        }
+
+        .social-btn i {
+            font-size: 1.5rem;
+            margin-left: 18px;
+            color: var(--cyan-glow);
+            filter: drop-shadow(0 0 5px var(--cyan-glow));
+        }
+
+        /* Ekhwaty Button */
+        .btn-ekhwaty-wrapper {
+            text-align: center;
+            margin: 40px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .btn-ekhwaty-wrapper.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-ekhwaty {
+            display: inline-block;
+            padding: 16px 45px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            background: linear-gradient(135deg, rgba(121, 40, 202, 0.8), rgba(0, 210, 255, 0.8));
+            border: 2px solid var(--cyan-glow);
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(121, 40, 202, 0.6), 0 0 15px rgba(0, 242, 254, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            text-decoration: none;
+        }
+
+        .btn-ekhwaty:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 50px rgba(0, 242, 254, 0.9), 0 0 30px rgba(121, 40, 202, 0.9);
+            letter-spacing: 2px;
+        }
+
+        /* ==================== FULLSCREEN MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            border: 2px solid var(--cyan-glow);
+            box-shadow: 0 0 40px rgba(0, 242, 254, 0.5);
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.7); }
+            to { transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 25px;
+            right: 35px;
+            color: #fff;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: var(--cyan-glow);
+        }
+    </style>
+</head>
+<body class="loading">
+
+    <canvas id="bg-canvas"></canvas>
+    <div class="cyber-grid"></div>
+
+    <!-- 1. LOADING SCREEN -->
+    <div id="loader">
+        <div class="loader-title">KIRO MIKHAIL</div>
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- 2. TOP BAR -->
+    <header class="top-bar">
+        <div class="top-bar-title">KIROLLOS MIKHAIL</div>
+    </header>
+
+    <!-- 3. COVER & PROFILE -->
+    <div class="cover-wrapper">
+        <img src="cover.jpg" alt="Cover" class="cover-img" id="coverImg">
+        <div class="cover-overlay-fade"></div>
+        
+        <div class="avatar-container" id="avatarContainer">
+            <div class="avatar-wrapper">
+                <img src="profile.jpg" alt="Profile" class="avatar-img" id="profileImg">
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-name-container">
+        <h1 class="main-name" id="mainName">Kiro Mikhail</h1>
+    </div>
+
+    <!-- 4. MAIN CONTENT -->
+    <main class="container">
+        
+        <!-- INFO CARDS -->
+        <div class="info-grid">
+            <div class="info-card">
+                <div class="card-label">Name</div>
+                <div class="card-value">Kiro</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Age</div>
+                <div class="card-value">16</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Country</div>
+                <div class="card-value">Egypt</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Hoppy</div>
+                <div class="card-value">FootBall</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">Birthday</div>
+                <div class="card-value">28/7/2010</div>
+            </div>
+            <div class="info-card">
+                <div class="card-label">City</div>
+                <div class="card-value">Alex</div>
+            </div>
+        </div>
+
+        <!-- 5. REAL SOCIAL ACCOUNTS LINKS -->
+        <h2 class="section-title">My accounts</h2>
+
+        <div class="links-list">
+            <!-- Instagram -->
+            <a href="https://www.instagram.com/kx__oka__xk?stkn=MTB5anY2aGVrejRldQ==" target="_blank" rel="noopener noreferrer" class="social-btn">
+                <i class="fab fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+
+            <!-- TikTok -->
+            <a href="https://www.tiktok.com/@kx__oka__kx?_r=1&_t=ZS-9AENp4viMaL" target="_blank" rel="noopener noreferrer" class="social-btn">
+                <i class="fab fa-tiktok"></i>
+                <span>TikTok</span>
+            </a>
+
+            <!-- Facebook -->
+            <a href="https://www.facebook.com/share/19VMjhcaMi/" target="_blank" rel="noopener noreferrer" class="social-btn">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+
+            <!-- Snapchat -->
+            <a href="https://www.snapchat.com/add/oka.ix?share_id=41lSfgLLEzk&locale=en-US" target="_blank" rel="noopener noreferrer" class="social-btn">
+                <i class="fab fa-snapchat"></i>
+                <span>Snapchat</span>
+            </a>
+
+            <!-- WhatsApp -->
+            <a href="https://wa.me/201147733857" target="_blank" rel="noopener noreferrer" class="social-btn">
+                <i class="fab fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+        </div>
+
+        <!-- 6. EKHWATY BUTTON -->
+        <div class="btn-ekhwaty-wrapper" id="ekhwatyWrapper">
+            <a href="#" class="btn-ekhwaty" onclick="alert('أخواتي فوق في القلب ❤️'); return false;">اخـــــــــــواتــــــــــي</a>
+        </div>
+
+    </main>
+
+    <!-- FULLSCREEN MODAL -->
+    <div class="modal" id="imageModal">
+        <span class="modal-close" id="modalClose">&times;</span>
+        <img class="modal-img" id="modalImg" alt="Expanded view">
+    </div>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Frame-busting security
+        if (window.top !== window.self) {
+            window.top.location = window.self.location;
+        }
+
+        // Canvas Stars Background
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.8;
+                this.speedY = Math.random() * 0.3 + 0.05;
+                this.opacity = Math.random();
+                this.fadeSpeed = Math.random() * 0.02 + 0.005;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                if (this.y < 0) {
+                    this.y = canvas.height;
+                    this.x = Math.random() * canvas.width;
+                }
+                this.opacity += this.fadeSpeed;
+                if (this.opacity > 1 || this.opacity < 0) {
+                    this.fadeSpeed = -this.fadeSpeed;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(0, 242, 254, ${Math.abs(this.opacity)})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) {
+            stars.push(new Star());
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animateStars);
+        }
+        animateStars();
+
+        // Timed Animations
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                document.body.classList.remove('loading');
+
+                triggerAnimations();
+            }, 2000);
+        });
+
+        function triggerAnimations() {
+            const coverImg = document.getElementById('coverImg');
+            coverImg.style.opacity = '1';
+            coverImg.style.transform = 'translateY(0)';
+
+            setTimeout(() => {
+                const avatarContainer = document.getElementById('avatarContainer');
+                avatarContainer.classList.add('active');
+                avatarContainer.style.opacity = '1';
+                avatarContainer.style.transform = 'translateX(0)';
+            }, 300);
+
+            setTimeout(() => {
+                const mainName = document.getElementById('mainName');
+                mainName.style.opacity = '1';
+                mainName.style.transform = 'translateX(0)';
+            }, 500);
+
+            const cards = document.querySelectorAll('.info-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('active');
+                }, 800 + (index * 150));
+            });
+
+            const btns = document.querySelectorAll('.social-btn');
+            btns.forEach((btn, index) => {
+                setTimeout(() => {
+                    btn.classList.add('active');
+                }, 1700 + (index * 120));
+            });
+
+            setTimeout(() => {
+                document.getElementById('ekhwatyWrapper').classList.add('active');
+            }, 2400);
+        }
+
+        // Fullscreen Modal
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalClose = document.getElementById('modalClose');
+
+        function openFullscreen(imgElement) {
+            modal.classList.add('show');
+            modalImg.src = imgElement.src;
+        }
+
+        document.getElementById('coverImg').addEventListener('click', function() {
+            openFullscreen(this);
+        });
+
+        document.getElementById('profileImg').addEventListener('click', function() {
+            openFullscreen(this);
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.classList.remove('show');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
